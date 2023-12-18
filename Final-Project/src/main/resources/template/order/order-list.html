@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your external stylesheet -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .hidden {
+            display: none;
+        }
+
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .cards {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+            width: 100%; /* Adjust as needed */
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card_content {
+            padding: 20px;
+        }
+
+        .card_title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card_text {
+            margin-bottom: 8px;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <title>Customer Orders</title>
+</head>
+
+
+<body>
+<th:block th:include="/components/header"></th:block>
+
+<div class="main">
+    <h1>Customer Orders</h1>
+    <h4>Pay For Order if Payment is not done yet</h4>
+    <input type="text" id="searchInput" oninput="filterOrders()" placeholder="Search Order Index...">
+
+
+    <ul class="cards">
+        <!-- Iterate over the list of orders using Thymeleaf -->
+     <!--   <li class="cards_item" th:each="order, orderStat : ${allCustomerOrders}">-->
+        <li class="cards_item order-card" th:each="order, orderStat : ${allCustomerOrders}">
+
+        <div class="card">
+                <div class="card_content">
+                    <!-- Incremented order number -->
+                  <!--  <h2 class="card_title" th:text="${orderStat.index + 1}">Order Title</h2>-->
+
+                    <div class="card_content" data-name="${order.fullNames}">
+                        <!-- Incremented order number -->
+                        <h2 class="card_title" th:text="${orderStat.index + 1 + '- Order Index'}">Order Title</h2>
+                        <!-- Rest of your card content -->
+
+
+
+                    <p><strong>Full Names:</strong> <span th:text="${order.fullNames}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${order.email}"></span></p>
+
+                    <!-- Iterate over cylinders and display fuel_type for each -->
+                    <div th:each="cylinder : ${order.cylinders}" class="fuel_type">
+                        <p><strong>Gas Type:  </strong> <span th:text="${cylinder.fuels.fuel_type}"></span></p>
+                    </div>
+
+                    <!-- Display properties of the first cylinder (adjust if needed) -->
+                    <p class="card_text" th:if="${not #lists.isEmpty(order.cylinders)}">
+                        <strong>Weight:</strong> <span th:text="${order.cylinders[0].weight}"></span>
+                    </p>
+                    <p class="card_text" th:if="${not #lists.isEmpty(order.cylinders)}">
+                        <strong>Price:</strong> <span th:text="${order.cylinders[0].price}"></span>
+                    </p>
+                    <!-- Display other properties of the order -->
+                    <p class="card_text"><strong>Quantity:</strong> <span th:text="${order.quantity}"></span></p>
+                    <p class="card_text"><strong>Destination:</strong> <span th:text="${order.destination}"></span></p>
+                    <p class="card_text"><strong>Order Date:</strong> <span th:text="${#temporals.format(order.order_date, 'yyyy-MM-dd')}"></span></p>
+                    <p class="card_text"><strong>Delivery Date:</strong> <span th:text="${#temporals.format(order.delivery_date, 'yyyy-MM-dd')}"></span></p>
+                    <p class="card_text"><strong>Delivery Time:</strong> <span th:text="${order.delivery_hours}"></span></p>
+                    <!-- Display total_cost of fuels (assuming fuels is a collection) -->
+                    <p class="card_text"><strong>Total Cost:</strong> <span th:text="${order.total_cost ?: 0}"></span></p>
+
+                    <p th:if="${order.paid}" class="done-icon ">✔ Payment Done</p>
+
+                        <a th:if="${!order.paid}" th:href="@{/{orderId}/makepayment(orderId=${order.id})}">
+                            <button class="btn card_btn">PAY HERE</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div id="pagination">
+    <button onclick="changePage('prev')">Previous</button>
+    <span id="page-number">Page 1</span>
+    <button onclick="changePage('next')">Next</button>
+</div>
+
+
+
+
+</body>
+
+</html>
+
+
+<script>
+    function filterOrders() {
+        var input, filter, cards, card, title, i, txtValue;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        cards = document.getElementsByClassName('order-card');
+
+        for (i = 0; i < cards.length; i++) {
+            card = cards[i];
+            title = card.querySelector('.card_title');
+            txtValue = title.textContent || title.innerText;
+
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        }
+    }
+
+
+    // function filterOrdersByNames() {
+    //     console.log("Function called!");
+    //
+    //     var input = document.getElementById('searchInputs');
+    //
+    //     if (input) {
+    //         var filter = input.value.toUpperCase();
+    //         var cards = document.getElementsByClassName('order-card');
+    //
+    //         for (var i = 0; i < cards.length; i++) {
+    //             var card = cards[i];
+    //             var cardContent = card.querySelector('.card_content');
+    //
+    //             if (cardContent) {
+    //                 var name = cardContent.getAttribute('data-name');
+    //
+    //                 if (name !== null && name !== undefined) {
+    //                     var txtValue = name.toUpperCase();
+    //
+    //                     if (txtValue.includes(filter)) {
+    //                         card.classList.remove('hidden');
+    //                     } else {
+    //                         card.classList.add('hidden');
+    //                     }
+    //                 } else {
+    //                     console.log("Data-name attribute is null or undefined for card:", card);
+    //                     card.classList.add('hidden');
+    //                 }
+    //             } else {
+    //                 console.log("Card content element not found for card:", card);
+    //             }
+    //         }
+    //     } else {
+    //         console.log("Input element with ID 'searchInputs' not found.");
+    //     }
+    // }
+
+
+
+
+</script>

@@ -1,0 +1,324 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.18.0/font/bootstrap-icons.css">
+    <link href="css/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <style>
+        img{
+            float: right;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+
+
+        }
+
+        header {
+            background-color:white;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            height: 100px;
+
+        }
+
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+
+            margin-right: 20px;
+            font-size: 20px;
+            padding: 10px;
+        }
+
+        nav ul li a {
+            position: relative;
+            text-decoration: none;
+            color: black;
+            text-transform: uppercase;
+            transition: color 0.3s ease-in-out;
+        }
+
+        nav ul li a::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 4px; /* Adjust the height of the line as needed */
+            background-color: green;
+            transition: width 0.3s ease-in-out;
+        }
+
+        nav ul li a:hover {
+            color: green;
+        }
+
+        nav ul li a:hover::before {
+            width: 100%;
+        }
+        #logo{
+            width: 120px;
+            border-radius: 90%;
+            float: left;
+            margin-left: 30px;
+            margin-bottom: 30px;
+        }
+
+
+
+
+
+
+
+        .text h1 {
+            font-size: 30px;
+            font-weight: bold;
+            color: black; /* Change the color to your preference */
+            text-align: center;
+            text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); /* Add a subtle text shadow for better visibility */
+        }
+
+
+
+        button {
+            background-color: #4CAF50; /* Green background color */
+            color: white; /* White text color */
+            padding: 10px 20px; /* Add padding for better appearance */
+            font-size: 30px;
+            border: none; /* Remove default button border */
+            border-radius: 5px; /* Add rounded corners */
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease; /* Add a smooth transition effect */
+            margin: 50px;
+        }
+
+        button:hover {
+            background-color: #277dee; /* Darker green on hover */
+        }
+
+    </style>
+
+    <title>Home Gas Delivery</title>
+</head>
+
+
+<body>
+<header>
+    <a href="index.html"><img id="logo" src="https://th.bing.com/th/id/R.053cb5ea3ecf2f8305ad84d3a29b668e?rik=yq39VqTh5eGFJw&riu=http%3a%2f%2fwww.logotypes101.com%2flogos%2f590%2f9CF98F5C37F676DC887D3A72159FCA02%2flogogas.png&ehk=Pt9w1LlA06AxBkldnbyoJ%2fs3gUfk74%2byzVlS9EmwOFM%3d&risl=&pid=ImgRaw&r=0" alt=""></a>
+    <nav>
+        <ul>
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/customerOrders/new}">Orders</a></li>
+            <li><a th:href="@{/login}">Sign In</a></li>
+            <li><a th:href="@{/register}">Sign Up</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+
+
+
+<main class="container">
+    <script th:if="${errorMessage != null}">
+        alert([[${errorMessage}]]); // Using double brackets to avoid Thymeleaf processing
+    </script>
+
+    <div th:if="${param.errorMessage}" class="alert alert-danger">Greater quantity</div>
+
+
+    <img src="https://th.bing.com/th/id/OIP.B2kFzDah5Sbj2k1Fr04f9QHaHa?rs=1&pid=ImgDetMain
+    ">
+    <h2 class="text-center">Create New order</h2>
+
+
+    <form role="form" method="post" th:action="@{/customerOrders/new}" th:object="${customerOrder}">
+
+
+        <div class="row col-5">
+            <div class="form-group col">
+                <label >Full Names</label>
+                <input type="text" class="form-control" id="names" name="names" th:field="*{fullNames}" required
+                       pattern="^[A-Za-z\s]{1,}$"
+                       title="Please enter valid full names">
+            </div>
+        </div>
+        <div class="row col-5">
+            <div class="form-group col">
+                <label >Phone Number</label>
+                <input type="text" class="form-control" id="phone" name="phone" th:field="*{phone}"
+                       required pattern="07[0-9]{8}" title="Please enter a valid 10-digit phone number">
+            </div>
+        </div>
+        <div class="row col-5">
+            <div class="form-group col">
+                <label >Email</label>
+                <input type="email" class="form-control" id="email" name="email" th:field="*{email}" required
+                       pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                       title="Please enter a valid email address">
+            </div>
+        </div>
+
+        <div class="row col-5">
+            <div class="form-group col">
+                <label >Name of your Order</label>
+                <input type="text" class="form-control" id="name" name="name" th:field="*{name}" required>
+            </div>
+        </div>
+        <div class="row col-5">
+            <div class="form-group col">
+                <label > Choose Cylinder</label>
+                <select class="form-control" name="cylinder" id="cylinderSelect" th:field="*{cylinders}" required>
+                    <th:block th:each="fue : ${allCylinders}">
+                        <option th:value="${fue.id}" th:text="${'weight: ' + fue.weight + ', price: '  + fue.price+', contains: '+ fue.fuels.fuel_type.name}"  ></option>
+
+                    </th:block>
+                </select>
+
+            </div>
+        </div>
+        <p>Selected Cylinder Price: <span id="selectedCylinderPrice"></span></p>
+
+        <div class="row col-5">
+            <div class="form-group col">
+                <label >Quantity</label>
+                <input type="text" class="form-control" id="quantity" name="quantity" th:field="*{quantity}" required
+                       pattern="^[1-9]\d*$"
+                       title="Please enter a valid quantity (positive integer)">
+            </div>
+        </div>
+        <div class="row col-5">
+            <div class="form-group col">
+                <label >Destination / Delivery Place</label>
+                <input type="text" class="form-control" id="destination" name="destination" th:field="*{destination}"
+                       required
+                       pattern="^[A-Za-z\s\d-.,]{1,}$"
+                       title="Please enter a valid destination/place"
+            </div>
+        </div>
+        <div class="row col-5">
+            <div class="form-group col">
+                <label >Delivery date</label>
+                <input type="date" class="form-control" id="dedate" name="dedate" th:field="*{delivery_date}" required>
+            </div>
+        </div>
+
+        <div class="row col-5">
+            <div class="form-group col">
+                <label for="deliveryHours">Delivery Hours</label>
+                <select class="form-control" id="deliveryHours" name="deliveryHours" th:field="*{delivery_hours}" required>
+                    <!-- Add your options for delivery hours here -->
+                    <option value="9:00 AM">9:00 AM</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="11:00 AM">12:00 AM</option>
+                    <option value="11:00 AM">13:00 PM</option>
+                    <option value="11:00 AM">14:00 PM</option>
+                    <option value="11:00 AM">15:00 PM</option>
+                    <option value="11:00 AM">16:00 PM</option>
+                    <option value="11:00 AM">17:00 PM</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+        </div>
+        <div class="row col-5">
+            <div class="form-group col">
+
+                <p>Total Cost: <span id="totalCost">0.0</span></p>
+                <input type="text" class="form-control" id="total_Cost" name="total_Cost" th:field="*{total_cost}" readonly>
+
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</main>
+
+</body>
+</html>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Get references to the relevant elements
+        var fuelSelect = document.getElementById("cylinderSelect");
+        var selectedCylinderPriceSpan = document.getElementById("selectedCylinderPrice");
+        //var unitPriceInput = document.getElementById("UnitPrice");
+        var quantityInput = document.getElementById("quantity");
+        var totalCostSpan = document.getElementById("totalCost");
+        var totalCostInput = document.getElementById("total_Cost");
+
+        // Add event listeners for the input change events
+        fuelSelect.addEventListener("change", updateSelectedCylinderDetails);
+        selectedCylinderPriceSpan.addEventListener("input", calculateTotalCost);
+        quantityInput.addEventListener("input", calculateTotalCost);
+
+        // Function to update the selected cylinder details
+
+        function updateSelectedCylinderDetails() {
+            var selectedOption = fuelSelect.options[fuelSelect.selectedIndex];
+            console.log("Selected Option Text:", selectedOption.text);
+            selectedCylinderPriceSpan.textContent = getPriceFromOptionText(selectedOption.text);
+        }
+
+
+
+        // Function to extract price from the option text
+        function getPriceFromOptionText(optionText) {
+            // Assuming the format is "weight: X, price: Y, contains: Z"
+            var regex = /price: (\d+(\.\d+)?)/;
+            var match = optionText.match(regex);
+
+            // Check if the regex matched the price
+            if (match && match.length >= 2) {
+                return parseFloat(match[1]);
+            }
+
+            // Default to 0.0 if no match is found
+            return 0.0;
+        }
+
+
+
+        // Function to update the total cost based on unit price and quantity
+        function calculateTotalCost() {
+            // Get user inputs
+            var quantity = parseInt(quantityInput.value) || 0;
+
+            // Get the selected option in the fuel dropdown
+            var selectedOption = fuelSelect.options[fuelSelect.selectedIndex];
+
+            // Extract the price from the selected option text
+            var price = getPriceFromOptionText(selectedOption.text);
+
+            // Calculate total cost
+            var totalCost = quantity * price;
+
+
+            // Update the total cost on the page
+            totalCostSpan.textContent = totalCost.toFixed(2);
+
+            // Update the total cost in the input field
+            totalCostInput.value = totalCost.toFixed(2);
+        }
+
+    });
+</script>
